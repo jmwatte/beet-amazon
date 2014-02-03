@@ -13,7 +13,9 @@ Also needs bottlenose
 https://github.com/lionheart/bottlenose
 
 in your pluginfolder
-you must set Access_Key_ID, Secret_Key_ID and asso_tag in the config of beets
+
+
+You must set Access_Key_ID, Secret_Key_ID and asso_tag in the config of beets
 like this...
 
 
