@@ -116,10 +116,9 @@ class AmazonPlugin(BeetsPlugin):
         return albums
 
     def decod(self, val, codec='utf8'):
-        """Ensure that all string are decoded to Unicode.
+        """Ensure that all string are coded to Unicode.
         """
-        if isinstance(val, str):
-            #print(val.decode(codec, 'ignore'))
+        if isinstance(val, basestring):
             return val.decode(codec, 'ignore')
 
     def get_album_info(self, item, ns, va_likely):
