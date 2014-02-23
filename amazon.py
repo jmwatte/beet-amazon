@@ -82,8 +82,11 @@ class AmazonPlugin(BeetsPlugin):
         nsregx = re.compile('^({.+?})')
         ns = nsregx.search(root.tag).group(1)
         item = root.find(".//{0}Tracks/..".format(ns))
-        return self.get_album_info(item)
-
+        if item :
+            return self.get_album_info(item)
+        else :
+            return None
+            
     def get_albums(self, query, va_likely):
         """Returns a list of AlbumInfo objects for a Amazon search query.
         """
