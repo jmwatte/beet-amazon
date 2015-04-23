@@ -12,7 +12,7 @@ Also needs bottlenose
 
 https://github.com/lionheart/bottlenose
 
-in your pluginfolder
+Copy the api.py file to your pluginfolder, rename it bottlenose.py.
 
 
 You must set Access_Key_ID, Secret_Key_ID and asso_tag in the config of beets
