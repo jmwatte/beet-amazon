@@ -73,9 +73,8 @@ class AmazonPlugin(BeetsPlugin):
             self.Access_Key_ID,
             str(self.Secret_Access_Key),
             self.asso_tag)
-        response = amazon.ItemSearch(
-            SearchIndex="Music",
-            Keywords=asin,
+        response = amazon.ItemLookup(
+            ItemId=asin,
             ResponseGroup="Tracks,ItemAttributes",
         )
         root = ET.fromstring(response)
@@ -83,10 +82,10 @@ class AmazonPlugin(BeetsPlugin):
         ns = nsregx.search(root.tag).group(1)
         item = root.find(".//{0}Tracks/..".format(ns))
         if item :
-            return self.get_album_info(item)
+            return self.get_album_info(item, ns, False)
         else :
             return None
-            
+
     def get_albums(self, query, va_likely):
         """Returns a list of AlbumInfo objects for a Amazon search query.
         """
@@ -231,7 +230,3 @@ class AmazonPlugin(BeetsPlugin):
                             catalognum=self.decod(catnumlisbig)
 
                          )
-
-
-
-
