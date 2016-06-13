@@ -33,11 +33,13 @@ class AmazonPlugin(BeetsPlugin):
             'source_weight': 0.3,
             'Access_Key_ID': None,
             'Secret_Access_Key': None,
+            'preferred_regions': ['US'],
             'asso_tag': "beets"
         })
         log.debug('in init Searching amazon')
         self.Access_Key_ID = self.config["Access_Key_ID"].get()
         self.Secret_Access_Key = self.config['Secret_Access_Key'].get()
+        self.preferred_regions = self.config['preferred_regions'].get()
         self.asso_tag = self.config['asso_tag'].get()
 
     def album_distance(self, items, album_info, mapping):
@@ -69,22 +71,27 @@ class AmazonPlugin(BeetsPlugin):
         or None if the album is not found.
         """
         log.debug('Searching amazon for release %s' % str(asin))
-        amazon = bottlenose.Amazon(
-            self.Access_Key_ID,
-            str(self.Secret_Access_Key),
-            self.asso_tag)
-        response = amazon.ItemLookup(
-            ItemId=asin,
-            ResponseGroup="Tracks,ItemAttributes",
-        )
-        root = ET.fromstring(response)
-        nsregx = re.compile('^({.+?})')
-        ns = nsregx.search(root.tag).group(1)
-        item = root.find(".//{0}Tracks/..".format(ns))
-        if item :
-            return self.get_album_info(item, ns, False)
-        else :
-            return None
+
+        for region in self.preferred_regions:
+            amazon = bottlenose.Amazon(
+                self.Access_Key_ID,
+                str(self.Secret_Access_Key),
+                self.asso_tag,
+                None,
+                "2013-08-01",
+                region)
+            response = amazon.ItemLookup(
+                ItemId=asin,
+                ResponseGroup="Tracks,ItemAttributes"
+            )
+            root = ET.fromstring(response)
+            nsregx = re.compile('^({.+?})')
+            ns = nsregx.search(root.tag).group(1)
+
+            item = root.find(".//{0}Tracks/..".format(ns))
+            if item :
+                return self.get_album_info(item, ns, False)
+        return None
 
     def get_albums(self, query, va_likely):
         """Returns a list of AlbumInfo objects for a Amazon search query.
